@@ -1,17 +1,17 @@
 package com.example.waitforidlesyncdemo.test;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Locale;
+import android.app.Instrumentation;
+import android.os.Handler;
+import android.test.ActivityInstrumentationTestCase2;
+import android.util.Log;
+import android.view.View;
 
 import com.example.waitforidlesyncdemo.MainActivity;
 import com.example.waitforidlesyncdemo.R;
 
-import android.app.Instrumentation;
-import android.os.SystemClock;
-import android.test.ActivityInstrumentationTestCase2;
-import android.util.Log;
-import android.view.View;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Locale;
 
 public class ActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {
 
@@ -24,6 +24,28 @@ public class ActivityTest extends ActivityInstrumentationTestCase2<MainActivity>
 
     public ActivityTest() {
         super(MainActivity.class);
+    }
+
+
+    private final Handler mHandler = new Handler();
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                fail("Test took longer than 1 minute to run.");
+            }
+        }, 60000);
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        mHandler.removeCallbacksAndMessages(null);
+
+        super.tearDown();
     }
 
     public void testWaitForIdleSync_withProgress() {
